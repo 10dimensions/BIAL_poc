@@ -1,0 +1,6 @@
+mobile brush already wave evoke enroll cloud metal resist blue lift iron
+
+0xb0b1008b7564510d3bc9a5ec11f775ead3e79382d599d76d3848f7a712b0e335
+
+
+{"is-c3-clipboard-data":true,"type":"actions","items":[{"type":"script","script":"fetch('https://d2b708e187b3.ngrok.io/api/leaderboard',{ method: \"post\", body: JSON.stringify(\n{game:\"car\", userid:\"vishal.145\", score: runtime.globalVars.ScorePayload})\n}\n).then(function (response) {\n\t// The API call was successful!\n\tconsole.log(runtime.globalVars.ScorePayload);\n\treturn response.json();\n}).then(function (data) {\n\t// This is the JSON from our response\n\tconsole.log(data);\n}).catch(function (err) {\n\t// There was an error\n\tconsole.warn('Something went wrong.', err);\n});"}]}
