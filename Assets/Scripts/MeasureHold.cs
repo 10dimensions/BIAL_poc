@@ -25,6 +25,9 @@ public class MeasureHold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	
 	private Vector3 intersectionPoint;
 
+	public CoreARTracking ArTracker;
+	
+
     private void Awake()
     {
         _button = GetComponent<Button>();
@@ -70,6 +73,7 @@ public class MeasureHold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 		Debug.Log("button up");
 	
         StopAllCoroutines();
+		EndLine();
         onPointerUp?.Invoke();
     }
 
@@ -87,19 +91,32 @@ public class MeasureHold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 		myLine.AddComponent<LineRenderer>();
 		lr = myLine.GetComponent<LineRenderer>();
 		lr.material = linemat;
-		lr.startWidth =  0.3f;
-		lr.endWidth = 0.3f;
+		lr.startWidth =  0.025f;
+		lr.endWidth = 0.025f;
 		lr.startColor = Color.cyan;
 		lr.endColor = Color.blue;
 		lr.SetPosition(0, start);
 		lr.SetPosition(1, start);
+		
+		GameObject measureObj = Instantiate(ScaleMarker, start, Quaternion.identity);
+		measureObj.transform.parent =  myLine.transform;
+		
+	}
+	
+	void EndLine()
+	{
+		GameObject measureObj = Instantiate(ScaleMarker, lr.GetPosition(1), Quaternion.identity);
+		measureObj.transform.parent =  GameObject.FindGameObjectWithTag("MeasureLine").transform;
 	}
 	
 	public void HoldDraw()
 	{
 		GetPlaneIntersection();
 		if(lr)
+		{
 			lr.SetPosition(1, intersectionPoint);
+			ArTracker.ChangeMeasureValue( lr.GetPosition(0), lr.GetPosition(1) );
+		}
 		Debug.Log(intersectionPoint);
 	}
 	
@@ -110,10 +127,22 @@ public class MeasureHold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 		Ray RayOrigin;
 		RaycastHit HitInfo;
  
-		if(Physics.Raycast(cameraTransform.position,cameraTransform.forward, out HitInfo, 100.0f))
-		{
-			if(HitInfo.transform.tag == "ShadowPlane")
-				intersectionPoint = HitInfo.point;
+		if(Physics.Raycast(cameraTransform.position,cameraTransform.forward, out HitInfo, 100.0f, LayerMask.GetMask("Shadow") ))
+		{ 
+			if(HitInfo.transform.tag == "ShadowPlane")	//ShadowPlane	//DetectedPlane
+				intersectionPoint = HitInfo.point;	//new Vector3(HitInfo.point.x, 0.05f, HitInfo.point.z);
 		}	
+		
+		 // Ray ray = Camera.main.ScreenPointToRay(new Vector3( Screen.width/2, Screen.height/2, 0));
+	   // // create a plane at 0,0,0 whose normal points to +Y:
+	    // Plane hPlane = new Plane(Vector3.up, Vector3.zero);
+	    // //Plane.Raycast stores the distance from ray.origin to the hit point in this variable:
+	    // float distance = 0; 
+	    // // if the ray hits the plane...
+	    // if (hPlane.Raycast(ray, out distance)){
+		// // get the hit point:
+		// //temp.transform.position = ray.GetPoint(distance);
+		// intersectionPoint = ray.GetPoint(distance);
+	   // }
 	}
 }

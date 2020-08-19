@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GoogleARCore;
 using GoogleARCore.Examples.ObjectManipulation;
+using UnityEngine.UI;
 
 public class CoreARTracking : MonoBehaviour
 {	
@@ -12,6 +13,14 @@ public class CoreARTracking : MonoBehaviour
 	
 	public GameObject RemovePawnObject;
 	private GameObject PostConstructionObject;
+	
+	public GameObject ShadowPlane;
+	
+	public LayerMask IgnoreShadow;
+	
+	//public TextMesh MeasureText;
+	public Text MeasureText;
+	public float UnitsFactor = 100f;
 
 	void Start()
 	{
@@ -20,21 +29,27 @@ public class CoreARTracking : MonoBehaviour
 	
 	void Update()
 	{	
-		if ( Input.GetMouseButtonDown (0))
+		//ShadowPlane.transform.position = new Vector3(ShadowPlane.transform.position.x, 0f, ShadowPlane.transform.position.z);
+		/*
+		if ( input.getmousebuttondown (0))
 		{ 
-		   RaycastHit hit; 
-		   Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
-		   if ( Physics.Raycast (ray,out hit,100.0f)) {
-			 Debug.Log("You selected the " + hit.transform.tag); // ensure you picked right object
-			 RemovePawnObject = hit.transform.gameObject;
+		   raycasthit hit; 
+		   ray ray = camera.main.screenpointtoray(input.mouseposition); 
+		   if ( physics.raycast (ray,out hit,100.0f)) {
+			 // // // // debug.log("you selected the " + hit.transform.tag); // ensure you picked right object
+			 if (raycastHit.transform.tag == "Pawn")
+			{
+				RemovePawnObject = hit.transform.gameobject;
+			}
 		  }
-		 }
+		}
+		*/
 	
 		 if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
 		{
 			Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 			RaycastHit raycastHit;
-			if (Physics.Raycast(raycast, out raycastHit))
+			if (Physics.Raycast(raycast, out raycastHit ))
 			{
 				if (raycastHit.transform.tag == "Pawn")
 				{
@@ -144,6 +159,44 @@ public class CoreARTracking : MonoBehaviour
 	public void DeleteMeasurement()
 	{ 
 		Destroy(GameObject.FindGameObjectWithTag("MeasureLine"));
+	}
+	
+	public void ExitMeasurement()
+	{
+		Destroy(GameObject.FindGameObjectWithTag("ShadowPlane"));
+		PawnManipulator.canShadowSpawn = false;
+	}
+	
+	public void EnterMeasurement()
+	{ 
+		PawnManipulator.canShadowSpawn = true;
+	}
+	
+	public void ChangeUnits(float _val)
+	{	
+		float oldUnits = float.Parse( MeasureText.text ) / UnitsFactor;
+		UnitsFactor = _val;
+		MeasureText.text = (oldUnits * UnitsFactor).ToString();
+		
+	}
+	
+	public void ChangeMeasureValue( Vector3 lpt0, Vector3 lpt1 )
+	{
+		float dist = Vector3.Distance( lpt0,lpt1 )* UnitsFactor;
+		
+		if(dist<0.5f)
+		{
+			MeasureText.transform.gameObject.SetActive(false);
+		}
+		else
+		{
+			MeasureText.transform.gameObject.SetActive(true);
+		}
+		
+		MeasureText.text = dist.ToString();
+		
+		//Vector3 _mp = new Vector3( (lpt0.x + lpt1.x)/2, (lpt0.y + lpt1.y)/2, (lpt0.z + lpt1.z)/2 );
+		//MeasureText.transform.gameObject.transform.position = _mp;
 	}
 	
 }

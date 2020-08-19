@@ -14,8 +14,9 @@ public class CameraVel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 Movement = new Vector3 (Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        Vector3 Movement = new Vector3 (Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"),  0f);
 		transform.position += Movement * speed * Time.deltaTime;
+		Debug.Log(transform.position);
     }
 }
 

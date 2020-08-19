@@ -31,6 +31,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
     public class PawnManipulator : Manipulator
     {		
 		public static bool canSpawn = true;
+		public static bool canShadowSpawn = false;
 		public CoreARTracking CoreTracker;
 	
         /// <summary>
@@ -48,6 +49,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// Manipulator prefab to attach placed objects to.
         /// </summary>
         public GameObject ManipulatorPrefab;
+		
+		public GameObject ShadowPrefab;
 		
 		public void ReplacePawnPrefab(GameObject newPrefab)
 		{
@@ -105,11 +108,20 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 }
                 else
                 {	
+					if(canShadowSpawn)
+					{	
+						canShadowSpawn = false;
+								
+						GameObject _shadow = Instantiate(ShadowPrefab, hit.Pose.position, hit.Pose.rotation );		
+						_shadow.SetActive(true);
+					}
+			
+			
 					if(canSpawn) 
 					{
-						CoreTracker.TogglePlaneTracking();
+						CoreTracker.TogglePlaneTracking();				
 						
-						// Instantiate game object at the hit pose.
+						// Instantiate game object at the hit pose. 
 						var gameObject = Instantiate(PawnPrefab, hit.Pose.position, hit.Pose.rotation);
 
 						// Instantiate manipulator.

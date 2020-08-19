@@ -19,6 +19,10 @@ public class UIBehaviour : MonoBehaviour
 	[Header("GPS")]
 	public Text LatText;
 	public Text LonText;
+	public Text LatText1;
+	public Text LonText1;
+	public Text LatText2;
+	public Text LonText2;
 	
 	[Header("Pre-Coonstruction")]
 	public GameObject PreConstructionContainer;
@@ -90,6 +94,10 @@ public class UIBehaviour : MonoBehaviour
             print("Location: " + Input.location.lastData.latitude + " " + Input.location.lastData.longitude );
 			LatText.text = Input.location.lastData.latitude.ToString();
 			LonText.text = Input.location.lastData.longitude.ToString();
+			LatText1.text = Input.location.lastData.latitude.ToString();
+			LonText1.text = Input.location.lastData.longitude.ToString();
+			LatText2.text = Input.location.lastData.latitude.ToString();
+			LonText2.text = Input.location.lastData.longitude.ToString();
 		}
 
         // Stop service if there is no need to query location updates continuously
